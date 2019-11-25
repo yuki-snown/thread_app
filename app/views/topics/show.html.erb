@@ -1,12 +1,16 @@
 <h1><%= link_to "Index", root_path %></h1>
 
 <h1><%= @topic.title %></h1>
-<% @posts.each_with_index do |post| %>
+<% @posts.each do |post| %>
   <p>
+    <% if post.res == nil %>
+    <% else %>
+      (*<%= post.res %>)
+    <% end%>
     <%= post.name %> : <%= post.body %>
     <%= link_to '[削除]', post_delete_path(post.id), method: :delete, data: {confirm: "削除してもよろしいですか？"} %>
-  </p>
 <% end %>
+</p>
 
 <br><br><br>
 
@@ -14,6 +18,8 @@
 <%= form_for @newpost, :url => post_create_path do |f| %>
   <p>ユーザ</p>
   <p><%= f.text_field :name %></p>
+  <p>返信</p>
+  <%= f.select :res, Post.all.map { |post| [post.name] }, include_blank:true %>
   <p>コメント</p>
   <p><%= f.text_area :body %></p>
   <%= f.hidden_field :topic_id %>
